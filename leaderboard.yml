@@ -1,0 +1,34 @@
+name: Leaderboard
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+  issues: write
+jobs:
+  add-score:
+    if: startsWith(github.event.issue.title, 'SCORE:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const t = context.payload.issue.title.replace('SCORE:', '').trim();
+            const m = t.match(/^([\w \-]{1,12}) (\d{1,9}) (story|story2|endless)$/);
+            const close = (why) => github.rest.issues.update({...context.repo, issue_number: context.issue.number, state: 'closed', body: why});
+            if (!m) return close('Rejected: bad format');
+            const score = parseInt(m[2]);
+            if (score > 1500000) return close('Rejected: implausible score');
+            let lb = [];
+            try { lb = JSON.parse(fs.readFileSync('leaderboard.json', 'utf8')); } catch (e) {}
+            lb.push({ n: m[1].trim(), s: score, m: m[3] });
+            lb.sort((a, b) => b.s - a.s);
+            fs.writeFileSync('leaderboard.json', JSON.stringify(lb.slice(0, 50), null, 1));
+            await close('Added to the leaderboard');
+      - run: |
+          git config user.name "leaderboard-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add leaderboard.json
+          git diff --cached --quiet || (git commit -m "Update leaderboard" && git push)
