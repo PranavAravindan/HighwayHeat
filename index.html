@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Highway Heat V4.1</title><style>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Highway Heat V4.2</title><style>
 :root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html,body{margin:0;height:100%;background:#06080c;color:#e8ecf3;font-family:system-ui,'Segoe UI',Roboto,sans-serif;overflow:hidden}
 #w{height:100%;display:flex;justify-content:center;align-items:center}
@@ -199,7 +199,7 @@ let GT=0;
 function garage(t){if(t!=null)GT=t;const ar=!!(S.s3||S.admin);if(!ar)GT=0;const A=GT?AIR:CARS,own=GT?S.ownA:S.own,sel=GT?S.ac:S.car,ids=GT?AIR.map((c,i)=>i):ORD;
 show(`<h2>${GT?'HANGAR':'GARAGE'}</h2>${ar?`<div><button class="btn m${GT?' s':''}" onclick="garage(0)">&#128663; GARAGE</button> <button class="btn m${GT?'':' s'}" onclick="garage(1)">&#9992; HANGAR</button></div>`:''}<div>Cash ${mny()} · Best score ${S.best|0}</div><div class=grid>`+ids.filter(i=>!A[i].secret||own.includes(i)||S.admin).map(i=>{const c=A[i],ow=own.includes(i),lk=!S.admin&&!ow&&(c.lock>S.best||c.unl);return`<div class="card ${sel==i?'sel':''}"><canvas id=p${i} width=120 height=84 ${lk?'style=opacity:.35':''}></canvas><b>${c.n}</b><br><small>${c.cls} · ${c.sp} mph</small><br>${c.pd?'<small style=color:#ffb020>'+c.pd+'</small><br>':''}`+(ow?`<button class="btn s m" onclick="${GT?'S.ac':'S.car'}=${i};save();garage()">${sel==i?'✔ Selected':'Select'}</button>`:lk?`<small>🔒 ${c.ul||'Reach score '+c.lock}</small>`:`<button class="btn s m" ${S.money<c.cost?'disabled':''} onclick=${GT?'buyA':'buy'}(${i})>Buy $${c.cost}</button>`)+`</div>`}).join('')+`</div><button class="btn s" onclick=menu()>BACK</button>`);
 ids.forEach(i=>{const e=$('#p'+i);if(!e)return;const q=e.getContext('2d');if(GT){q.translate(60,44);q.scale(.8,.8);drawAir(q,0,0,A[i],{t:0})}else{q.translate(60,42);q.rotate(Math.PI/2);q.scale(.8,.8);drawCar(q,0,0,A[i],{})}})}
-let SHA=0;function shop(){if(!(S.s3||S.admin))SHA=0;const c=SHA?AIR[S.ac]:CARS[S.car],u=SHA?U('a'+S.ac):U(S.car);show(`<h2>UPGRADE SHOP</h2><div>${c.n} · Cash <b>${mny()}</b></div>${(S.s3||S.admin)?'<button class="btn s m" onclick="SHA=!SHA;shop()">Upgrading: '+(SHA?'AIRCRAFT':'CAR')+' (tap to switch)</button>':''}`+(SHA?AUP:UP).map((n,i)=>{if(!SHA&&n[2]&&!S.s2)return'';const l=u[i]|0,cost=Math.round(8*(l+1)**1.8*(n[2]?6:1)*(SHA?4:1));return`<div class=row><div><b>${n[0]}</b> <span class=pips>${'■'.repeat(l)}${'□'.repeat(5-l)}</span><br><small>${n[1]}</small></div>${l>=5?'<b>MAX</b>':`<button class="btn s m" ${S.money<cost?'disabled':''} onclick="up(${i},${cost})">$${cost}</button>`}</div>`}).join('')+`<h2 style=margin-top:6px>RUN BOOSTERS</h2><small>One-use. Switch them on in the loadout before a run.</small>`+BO.filter(b=>!b.s2||S.s2).map(b=>`<div class=row><div><b>${b.n}</b> <small>owned ${S.inv[b.k]||0}</small><br><small>${b.d}</small></div><button class="btn s m" ${S.money<b.p?'disabled':''} onclick="bb('${b.k}',${b.p})">$${b.p}</button></div>`).join('')+`<button class="btn s" onclick=garage(${SHA?1:0})>CHANGE ${SHA?'AIRCRAFT':'CAR'}</button><button class="btn s" onclick=menu()>BACK</button>`)}
+let SHA=0;function shop(){if(!(S.s3||S.admin))SHA=0;const c=SHA?AIR[S.ac]:CARS[S.car],u=SHA?U('a'+S.ac):U(S.car);show(`<h2>UPGRADE SHOP</h2><div>${c.n} · Cash <b>${mny()}</b></div>${(S.s3||S.admin)?'<button class="btn s m" onclick="SHA=!SHA;shop()">Upgrading: '+(SHA?'AIRCRAFT':'CAR')+' (tap to switch)</button>':''}`+(SHA?AUP:UP).map((n,i)=>{if(!SHA&&n[2]&&!S.s2)return'';if(!SHA&&n[4]!=null&&!(u[n[4]]|0)&&!CARS[S.car].ptank&&CARS[S.car].pk!='gunner')return'';const l=u[i]|0,cost=Math.round(8*(l+1)**1.8*(n[2]?6:1)*(n[3]||1)*(SHA?4:1));return`<div class=row><div><b>${n[0]}</b> <span class=pips>${'■'.repeat(l)}${'□'.repeat(5-l)}</span><br><small>${n[1]}</small></div>${l>=5?'<b>MAX</b>':`<button class="btn s m" ${S.money<cost?'disabled':''} onclick="up(${i},${cost})">$${cost}</button>`}</div>`}).join('')+`<h2 style=margin-top:6px>RUN BOOSTERS</h2><small>One-use. Switch them on in the loadout before a run.</small>`+BO.filter(b=>!b.s2||S.s2).map(b=>`<div class=row><div><b>${b.n}</b> <small>owned ${S.inv[b.k]||0}</small><br><small>${b.d}</small></div><button class="btn s m" ${S.money<b.p?'disabled':''} onclick="bb('${b.k}',${b.p})">$${b.p}</button></div>`).join('')+`<button class="btn s" onclick=garage(${SHA?1:0})>CHANGE ${SHA?'AIRCRAFT':'CAR'}</button><button class="btn s" onclick=menu()>BACK</button>`)}
 function up(i,c){if(S.money>=c){if(!S.inf)S.money-=c;const a=SHA?U('a'+S.ac):U(S.car);a[i]=(a[i]|0)+1;save();shop()}}
 let SEL={};
 function prep(m){aud();sfx('clk');const own=BO.filter(b=>S.inv[b.k]>0&&okB(b,m));if(!own.length)return start(m);show(`<h2>LOADOUT</h2><small>Boosters are used up when the run starts. Boosters that do not work in the air are hidden there, and are not used up if you pick Sky Skip.</small>`+own.map(b=>`<div class=row><div><b>${b.n}</b> <small>×${S.inv[b.k]}</small><br><small>${b.d}</small></div><button class="btn s m" id=b_${b.k} onclick="tg('${b.k}')">${SEL[b.k]?'ON ✔':'OFF'}</button></div>`).join('')+`<button class=btn onclick="start('${m}')">GO!</button><button class="btn s" onclick=menu()>BACK</button>`)}
@@ -665,4 +665,98 @@ function ach(f){if(f!=null)AF=f;const T=['ALL','BASIC','PROGRESS','HARD','CHALLE
 show('<h2>ACHIEVEMENTS</h2><div><b>'+got.length+'</b> / '+ACH.length+' unlocked · earned <b style=color:#7fffa0>$'+got.reduce((s,a)=>s+a.r,0).toLocaleString()+'</b></div><div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center">'+T.map((x,i)=>'<button class="btn m '+(AF==i?'':'s')+'" onclick="ach('+i+')">'+x+'</button>').join('')+'</div>'+l.map(a=>{const d=S.ach[a.id];return'<div class=row style="'+(d?'border-color:#ffb020':'opacity:.75')+'"><div style="font-size:26px;flex:0 0 36px;text-align:center">'+(d?a.i:'🔒')+'</div><div><b>'+a.n+'</b> <small>'+TN[a.t]+'</small><br><small>'+a.d+'</small></div><b style="color:'+(d?'#7fffa0':'#9aa6b8')+'">'+(d?'✔':'$'+a.r.toLocaleString())+'</b></div>'}).join('')+'<button class="btn s" onclick=menu()>BACK</button>')}
 
 const boot=()=>{if(S.seen!==VER&&HAD)whatsNew();else{S.seen=VER;save();menu()}};startIntro(boot);requestAnimationFrame(loop);
+
+
+/* ===== v4.2: GUN, RELOAD, BLAST GUARD, REPAIRABILITY, TANK, GUNNER, ACHIEVEMENTS ===== */
+(()=>{
+const OK=m=>/^(story|endless)/.test(m)&&!/3$/.test(m),hy=Math.hypot,PI=Math.PI;
+const WP=[null,
+{n:'Tiny Pistols',dm:1,cd:.45,sp:1000,k:2,sz:3},
+{n:'Twin SMGs',dm:1.4,cd:.28,sp:1100,k:2,sz:3},
+{n:'Scatter Guns',dm:1.6,cd:.55,sp:950,k:3,sz:4,sp2:.16},
+{n:'Grenade Launcher',dm:3,cd:.9,sp:800,k:1,sz:6,R:75,hy:95},
+{n:'RPG Rocket Launcher',dm:6,cd:1.3,sp:900,k:1,sz:9,R:160,hy:260}];
+const TKW={n:'Tank Cannon',dm:4,cd:1.6,sp:850,k:1,sz:8,R:60,hy:80,tank:1};
+UP.push(['Gun','Mount a weapon (fire with F). L1 Tiny Pistols, L2 Twin SMGs, L3 Scatter Guns, L4 Grenade Launcher, L5 RPG that blasts whole lanes (Story 2 reward)',1,50],
+['Reload','Faster reloading, -15% delay per level (needs the Gun)',1,12,6],
+['Blast Guard','Protects you from your own explosions, -20% per level (needs the Gun)',1,14,6],
+['Repairability','ONE repair per run (press R): restores 25 / 40 / 60 / 80 / 100% health by level (Story 2 reward)',1,20]);
+CARS.push({n:'Behemoth',cls:'HEAVY TANK',col:'#4d5a3a',sp:100,ac:.55,hd:.7,t:1,w:52,h:96,cost:9000,lock:0,ptank:1,pk:'ptank',pd:'\ud83d\udca5 Tank: 4.5x health and a cannon (F) with big shells that can take down helicopters. REALLY slow.'},
+{n:'Gunner',cls:'ARMED',col:'#20242b',sp:200,ac:1.4,hd:1.1,t:2,w:44,h:78,armed:1,cost:4000,lock:0,unl:1,ul:'Shoot a helicopter with the Tank',pk:'gunner',pd:'\ud83d\udd2b Built-in gun: weapons start at level 3 even without upgrades and reload 25% faster.'});
+ORD.length=0;[...CARS.keys()].sort((a,b)=>CARS[a].sp-CARS[b].sp).forEach(i=>ORD.push(i));
+/* ---- achievements ---- */
+const ACH=[['gunBuy','Armed and Dangerous','Install the Gun'],['gun5','Rocket Man','Upgrade the Gun to the RPG'],['firstKill','First Blood','Destroy a vehicle with your weapon'],['gk25','Gunslinger','Destroy 25 vehicles with weapons'],['multi','Lane Clearer','Wreck 3 or more vehicles with a single blast'],['reloadBuy','Quick Hands','Install Reload'],['reload5','Lightning Reload','Max out Reload'],['guardBuy','Shielded','Install Blast Guard'],['guard5','Fireproof','Max out Blast Guard'],['selfHit','Friendly Fire','Hurt yourself with your own blast'],['heliAnger','Hornet\u2019s Nest','Anger a helicopter by firing at it'],['heliFlee','Smoke Screen','Scare a helicopter away with an upper-level gun'],['tankHeli','Tank vs Chopper','Shoot a helicopter with the Tank'],['heliDown','Chopper Down','Take down a helicopter'],['buyTank','Heavy Metal','Buy the Behemoth tank'],['armedUnlock','Gunner Unlocked','Unlock the armed car'],['repBuy','Pit Crew','Install Repairability'],['repUse','Fixed Up','Use your repair in a run'],['rep5','Full Service','Max out Repairability']];
+const TO=document.createElement('div');TO.style.cssText='position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#161b26ee;border:1px solid #ffb020;border-radius:10px;padding:8px 14px;font:800 13px system-ui;color:#ffd54a;z-index:9;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center';$('#st').appendChild(TO);
+function toast(t){TO.textContent=t;TO.style.opacity=1;clearTimeout(TO.h);TO.h=setTimeout(()=>TO.style.opacity=0,3200)}
+function ach(id){S.ach=S.ach||{};if(S.ach[id])return;S.ach[id]=1;save();const a=ACH.find(x=>x[0]==id);toast('\ud83c\udfc6 ACHIEVEMENT: '+a[1])}
+function achMenu(){const a=S.ach||{};show('<h2>ACHIEVEMENTS</h2><div>'+ACH.filter(x=>a[x[0]]).length+' / '+ACH.length+'</div>'+ACH.map(x=>'<div class=row><div><b>'+(a[x[0]]?'&#127942; ':'&#128274; ')+x[1]+'</b><br><small>'+x[2]+'</small></div></div>').join('')+'<button class="btn s" onclick=menu()>BACK</button>')}
+/* ---- weapon logic ---- */
+const gLv=()=>{const C=G.car;if(!C||C.ptank)return 0;const l=(S.s2||S.admin)?(U(S.car)[6]|0):0;return C.pk=='gunner'?Math.max(3,l):l};
+function fireGun(){if(!G.run||G.dead||paused||G.air||G.cine||!OK(G.m)||G.gcd>0)return;const C=G.car,tk=!!C.ptank,l=gLv();if(!tk&&!l)return;const w=tk?TKW:WP[l],rl=G.u[7]|0;G.gcd=Math.max(.12,w.cd*(1-.15*rl)*(C.pk=='gunner'?.75:1));G.gmax=G.gcd;G.gf=.09;G.pb=G.pb||[];
+const mk=(dx,vx)=>G.pb.push({x:G.px+dx,y:G.py-C.h/2,vx,vy:-w.sp,w,l:tk?0:l,tk,life:.7});
+if(w.k==3)[-1,0,1].forEach(i=>mk(i*8,i*w.sp2*w.sp));else if(w.k==2)[-1,1].forEach(i=>mk(i*C.w*.3,0));else mk(0,0);
+if(l>=4||tk)G.shake=Math.max(G.shake,.12);sfx('shot');spark(G.px,G.py-C.h/2,w.k==1?8:3)}
+const kills=()=>{S.gk=(S.gk|0)+1;if(S.gk==1)ach('firstKill');if(S.gk>=25)ach('gk25');if(S.gk%5==0)save()};
+function hurt(o,k,dm){if(k=='cop'||k=='ct'){o.hp-=dm;spark(o.x,o.y,4);if(o.hp<=0){o.dead=1;kills()}}else{o.hp=(o.hp??(o.tank?9:3))-dm;spark(o.x,o.y,4);if(o.hp<=0){o.dead=1;boom(o.x,o.y,28);G.down++;earn(2);sfx('down');msg(o.tank?'TANK DESTROYED  +$2.00':'ARMED CAR DOWN  +$2.00','#ffd54a');kills()}}}
+function armedUnlock(){const i=CARS.findIndex(c=>c.pk=='gunner');if(i>=0&&!S.own.includes(i)){S.own.push(i);save();msg('ARMED CAR UNLOCKED: GUNNER!','#7fffd4');ach('armedUnlock')}}
+function heliHit(l,tk){const h=G.heli;if(!h||h.st!='in')return;
+if(tk){armedUnlock();ach('tankHeli');h.hp=(h.hp??4)-1;boom(h.x,h.y,12);msg('HELICOPTER HIT!','#7fffd4');if(h.hp<=0){boom(h.x,h.y,40);G.heli=null;G.well=-40;G.down++;earn(6);msg('HELICOPTER DOWN!  +$6.00','#ffd54a');ach('heliDown')}return}
+if(!(h.ang>0)){msg('ANGRY HELICOPTER!','#f55');ach('heliAnger')}h.ang=9;h.bt=.5;
+if(l>=4){G.hs=h;G.heli=null;G.well=-60;G.smk=G.smk||[];for(let i=0;i<6;i++)G.smk.push({x:h.x+R(-30,30),y:h.y+R(-20,20),r:R(26,44),l:3.6,m:3.6,h:1});msg('THE HELICOPTER FLEES THE SMOKE','#7fe3ff');ach('heliFlee')}}
+function blast(x,y,w,l,tk){G.ex=G.ex||[];G.ex.push({x,y,R:w.R,hy:w.hy,t:0});boom(x,y,tk?10:l==5?26:14);G.shake=Math.max(G.shake,l==5?.5:.25);sfx('down');
+const inz=o=>Math.abs(o.x-x)<w.R+(o.w||40)/2&&Math.abs(o.y-y)<w.hy+(o.h||60)/2;let n=0;
+G.cp.forEach(c=>{if(!c.dead&&inz(c)){hurt(c,'cop',w.dm);n++}});G.ct.forEach(c=>{if(!c.dead&&inz(c)){hurt(c,'ct',w.dm);n++}});
+G.tf.forEach(t=>{if(!t.dead&&inz(t)){if(t.tank||t.armed)hurt(t,'tf',w.dm);else{t.dead=1;boom(t.x,t.y,8);n++}}});
+const h=G.heli;if(h&&h.st=='in'&&inz({x:h.x,y:h.y,w:70,h:70}))heliHit(l,tk);if(n>=3)ach('multi');
+if(!G.dead&&G.gh<=0&&hy(G.px-x,(G.py-y)*.8)<w.R*.7){const sd=(tk?8:l==5?24:12)*Math.max(0,1-.2*(G.u[8]|0));if(sd>0){dmg(sd,1);msg('SELF BLAST!','#f66');ach('selfHit')}else msg('BLAST GUARD!','#7fffd4')}}
+const near=(p,o,r)=>Math.abs(p.x-o.x)<(o.w||40)/2+r&&Math.abs(p.y-o.y)<(o.h||60)/2+r;
+function gunUpd(dt){if(!G.run||G.air||G.cine||!OK(G.m))return;G.pb=G.pb||[];G.ex=G.ex||[];G.smk=G.smk||[];G.gcd=Math.max(0,(G.gcd||0)-dt);G.gf=Math.max(0,(G.gf||0)-dt);
+G.pb.forEach(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const w=p.w,pr=w.sz+5;if(p.l==5||p.tk)G.smk.push({x:p.x,y:p.y+14,r:5,l:.5,m:.5});let hit=null;
+for(const c of G.cp)if(!c.dead&&near(p,c,pr)){hit=['cop',c];break}
+if(!hit)for(const c of G.ct)if(!c.dead&&near(p,c,pr)){hit=['ct',c];break}
+if(!hit)for(const t of G.tf)if(!t.dead&&(t.tank||t.armed)&&near(p,t,pr)){hit=['tf',t];break}
+if(!hit&&G.heli&&G.heli.st=='in'&&near(p,{x:G.heli.x,y:G.heli.y,w:70,h:70},pr))hit=['heli'];
+if(hit||p.life<=0||p.y<-30){p.d=1;if(w.R)blast(p.x,p.y,w,p.l,p.tk);else if(hit){if(hit[0]=='heli')heliHit(p.l,0);else hurt(hit[1],hit[0],w.dm)}}});
+G.pb=G.pb.filter(p=>!p.d);G.ex.forEach(e=>e.t+=dt*2.2);G.ex=G.ex.filter(e=>e.t<1);G.smk.forEach(s=>{s.l-=dt;s.y+=G.speed*2.1*dt;s.r+=dt*12});G.smk=G.smk.filter(s=>s.l>0);G.tf=G.tf.filter(t=>!t.dead);
+const h=G.heli;if(h&&h.st=='in'&&h.ang>0&&!G.dead){h.ang-=dt;h.bt=(h.bt||0)-dt;if(h.bt<=0&&G.empT<=0){h.bt=1.1;const dx=G.px+G.vx*.3-h.x,dy=G.py-h.y,L=hy(dx,dy)||1;G.bl.push({x:h.x,y:h.y+30,vx:dx/L*520,vy:dy/L*520,k:1,dm:15});sfx('shot')}}
+if(G.hs&&!G.smk.some(s=>s.h)){G.heli=G.hs;G.hs=null;G.heli.st='in';G.heli.y=-170;G.heli.ang=0;G.heli.bt=0;G.well=0;msg('THE HELICOPTER IS BACK','#f55')}}
+function fixCar(){if(!G.run||G.dead||paused||G.air||G.cine||!OK(G.m)||G.fixed)return;const l=(S.s2||S.admin)?(G.u[9]|0):0;if(!l)return;G.fixed=1;const pc=[0,.25,.4,.6,.8,1][l];G.hp=Math.min(G.hm,G.hp+G.hm*pc);sfx('chk');spark(G.px,G.py,24);msg('REPAIRED +'+Math.round(pc*100)+'% HEALTH','#7fffa0');ach('repUse')}
+/* ---- drawing ---- */
+function ptDraw(q,X,Y,v,o){q.save();q.translate(X,Y);q.rotate(o.tilt||0);const w=v.w,h=v.h;q.fillStyle='rgba(0,0,0,.4)';rr(q,-w/2+6,-h/2+8,w,h,8);q.fill();q.fillStyle='#22261c';rr(q,-w/2,-h/2,13,h,4);q.fill();rr(q,w/2-13,-h/2,13,h,4);q.fill();q.strokeStyle='#12150d';q.lineWidth=2;for(let y=-h/2+4;y<h/2-2;y+=7){q.beginPath();q.moveTo(-w/2,y);q.lineTo(-w/2+13,y);q.moveTo(w/2-13,y);q.lineTo(w/2,y);q.stroke()}
+const gr=q.createLinearGradient(-w/2,0,w/2,0);gr.addColorStop(0,'#3d4a2a');gr.addColorStop(.5,'#6b7d4a');gr.addColorStop(1,'#3a4829');q.fillStyle=gr;rr(q,-w/2+10,-h/2+4,w-20,h-8,6);q.fill();q.fillStyle='#2b3320';q.fillRect(-4,-h/2-8,8,h*.5);q.fillStyle='#5a6b3d';q.beginPath();q.arc(0,4,w*.27,0,7);q.fill();q.fillStyle='#3d4a2a';q.beginPath();q.arc(0,4,w*.12,0,7);q.fill();q.restore()}
+function mount(q,X,Y,C){const l=gLv();q.save();q.translate(X,Y);
+if(l==1)[-1,1].forEach(s=>{q.fillStyle='#444';q.fillRect(s*C.w*.3-1.5,-C.h*.42,3,9);q.fillStyle='#ccc';q.fillRect(s*C.w*.3-1,-C.h*.42,2,3)});
+else if(l==2)[-1,1].forEach(s=>{q.fillStyle='#2a2f38';q.fillRect(s*C.w*.3-3.5,-C.h*.3,7,9);q.fillStyle='#555';q.fillRect(s*C.w*.3-1.5,-C.h*.46,3,16)});
+else if(l==3)[-1,1].forEach(s=>{q.fillStyle='#555';q.fillRect(s*C.w*.3-3,-C.h*.46,6,16);q.fillStyle='#e90';q.fillRect(s*C.w*.3-4,-C.h*.46,8,3)});
+else if(l==4){q.fillStyle='#4a5a3a';rr(q,-6,-C.h*.5-8,12,32,3);q.fill();q.fillStyle='#222';q.fillRect(-5,-C.h*.5-10,10,4)}
+else if(l==5){q.fillStyle='#3e4a2c';rr(q,-7,-C.h*.5-16,14,52,4);q.fill();q.fillStyle='#e22';q.beginPath();q.moveTo(-5,-C.h*.5-16);q.lineTo(5,-C.h*.5-16);q.lineTo(0,-C.h*.5-28);q.fill();q.fillStyle='#222';q.fillRect(-10,-C.h*.1,20,4);q.fillRect(-10,C.h*.05,20,4)}
+if(G.gf>0){const tip=C.ptank?-C.h/2-8:-C.h*.5-(l>=4?14:6),r=10+(C.ptank?6:l)*5;q.globalCompositeOperation='lighter';const rg=q.createRadialGradient(0,tip,1,0,tip,r);rg.addColorStop(0,'rgba(255,240,160,.95)');rg.addColorStop(1,'rgba(255,120,20,0)');q.fillStyle=rg;q.fillRect(-r,tip-r,r*2,r*2)}q.restore()}
+function gunDraw(q,X,Y,C){if(C.ptank||gLv())mount(q,X,Y,C);
+(G.smk||[]).forEach(s=>{q.fillStyle='rgba(150,150,150,'+(.5*s.l/s.m)+')';q.beginPath();q.arc(s.x,s.y,s.r,0,7);q.fill()});
+(G.pb||[]).forEach(p=>{const l=p.tk?6:p.l;
+if(l==1){q.fillStyle='#ffe680';q.beginPath();q.arc(p.x,p.y,2.2,0,7);q.fill()}
+else if(l==2){q.strokeStyle='#ffb040';q.lineWidth=2;q.beginPath();q.moveTo(p.x,p.y);q.lineTo(p.x,p.y+14);q.stroke()}
+else if(l==3){q.fillStyle='#ff7a30';q.beginPath();q.arc(p.x,p.y,3.4,0,7);q.fill()}
+else if(l==4){q.fillStyle='#3a4a2a';q.beginPath();q.arc(p.x,p.y,5.5,0,7);q.fill();q.fillStyle='#9acd32';q.beginPath();q.arc(p.x-1.5,p.y-1.5,2,0,7);q.fill()}
+else if(l==6){q.save();q.globalCompositeOperation='lighter';const rg=q.createRadialGradient(p.x,p.y,1,p.x,p.y,12);rg.addColorStop(0,'#fff0a0');rg.addColorStop(.5,'#ff8a20');rg.addColorStop(1,'rgba(255,60,0,0)');q.fillStyle=rg;q.fillRect(p.x-12,p.y-12,24,24);q.restore()}
+else{q.fillStyle='#d8dde6';q.fillRect(p.x-3,p.y-10,6,22);q.fillStyle='#e22';q.beginPath();q.moveTo(p.x-3,p.y-10);q.lineTo(p.x+3,p.y-10);q.lineTo(p.x,p.y-18);q.fill();q.save();q.globalCompositeOperation='lighter';q.fillStyle='rgba(255,170,50,.9)';q.beginPath();q.arc(p.x,p.y+16+Math.random()*5,6,0,7);q.fill();q.restore()}});
+(G.ex||[]).forEach(e=>{const f=e.t,a=1-f,r=e.R*(.4+.6*f),k=e.hy/e.R;q.save();q.globalCompositeOperation='lighter';const rg=q.createRadialGradient(e.x,e.y,2,e.x,e.y,r);rg.addColorStop(0,'rgba(255,240,170,'+a+')');rg.addColorStop(.5,'rgba(255,120,30,'+a*.7+')');rg.addColorStop(1,'rgba(255,60,0,0)');q.fillStyle=rg;q.beginPath();q.ellipse(e.x,e.y,r,r*k,0,0,7);q.fill();q.strokeStyle='rgba(255,220,140,'+a+')';q.lineWidth=6*a+1;q.beginPath();q.ellipse(e.x,e.y,e.R*f*1.1,e.R*f*1.1*k,0,0,7);q.stroke();q.restore()})}
+function gunHud(){if(G.air||!OK(G.m)||!G.run||G.cine)return;const C=G.car,l=gLv(),rp=(S.s2||S.admin)&&(G.u[9]|0),tk=C.ptank;if(!tk&&!l&&!rp)return;pn(12,76,118,(tk||l)&&rp?52:34);let y=94;if(tk||l){tx((tk?TKW:WP[l]).n+' [F]',20,y,'700 9px system-ui','#cdd5e2');bar(20,y+5,100,6,G.gcd>0?1-G.gcd/(G.gmax||1):1,G.gcd>0?'#ff9a3c':'#7fffa0');y+=24}if(rp)tx(G.fixed?'REPAIR USED':'REPAIR READY [R]',20,y,'700 9px system-ui',G.fixed?'#667':'#7fffa0')}
+/* ---- hooks ---- */
+const _dc=drawCar;drawCar=function(q,X,Y,v,o={}){if(v&&v.ptank)ptDraw(q,X,Y,v,o);else _dc(q,X,Y,v,o);if(v===G.car&&G.run&&!G.air&&q===g&&G.m!='cop'&&OK(G.m))gunDraw(q,X,Y,v)};
+const _upd=upd;upd=function(dt){_upd(dt);gunUpd(dt)};
+const _hud=hud;hud=function(){_hud();gunHud()};
+const _ng=newG;newG=function(m,bo){const x=_ng(m,bo);if(x.car&&x.car.ptank&&!/3$/.test(m)){x.hm=450;x.hp=450}return x};
+const _ia=initAir;initAir=function(){_ia();G.hm=100;G.hp=100};
+const _pf=pressFlare;pressFlare=function(){G.air?_pf():fireGun()};
+const _up=up;up=function(i,c){_up(i,c);if(SHA)return;const l=U(S.car)[i]|0;if(i==6&&l>=1)ach('gunBuy');if(i==6&&l>=5)ach('gun5');if(i==7&&l>=1)ach('reloadBuy');if(i==7&&l>=5)ach('reload5');if(i==8&&l>=1)ach('guardBuy');if(i==8&&l>=5)ach('guard5');if(i==9&&l>=1)ach('repBuy');if(i==9&&l>=5)ach('rep5')};
+const _buy=buy;buy=function(i){_buy(i);if(CARS[i]&&CARS[i].ptank&&S.own.includes(i))ach('buyTank')};
+const _m=menu;menu=function(){_m();const b=[...ui.querySelectorAll('button')].find(x=>/UPGRADE SHOP/.test(x.textContent));if(b)b.insertAdjacentHTML('afterend','<button class="btn s" onclick=achMenu()>ACHIEVEMENTS</button>')};
+const mkB=(id,t,fn)=>{const b=document.createElement('button');b.id=id;b.textContent=t;b.onpointerdown=e=>{fn();e.preventDefault()};$('#tc').appendChild(b);return b},bG=mkB('bgun','FIRE',fireGun),bF=mkB('bfix','FIX',fixCar);
+const _lp=loop;loop=function(t){_lp(t);const gr=!G.air&&G.run&&OK(G.m);bG.style.display=gr&&(G.car.ptank||gLv()>0)?'':'none';bF.style.display=gr&&(S.s2||S.admin)&&(G.u[9]|0)?'':'none'};
+addEventListener('keydown',e=>{if(typing(e))return;if(e.code=='KeyR')fixCar()});
+Object.assign(window,{achMenu});
+bG.style.display=bF.style.display='none';
+})();
+
 </script></body></html>
