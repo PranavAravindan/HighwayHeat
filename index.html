@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Highway Heat V4.2</title><style>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Highway Heat V4.3</title><style>
 :root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html,body{margin:0;height:100%;background:#06080c;color:#e8ecf3;font-family:system-ui,'Segoe UI',Roboto,sans-serif;overflow:hidden}
 #w{height:100%;display:flex;justify-content:center;align-items:center}
@@ -199,7 +199,7 @@ let GT=0;
 function garage(t){if(t!=null)GT=t;const ar=!!(S.s3||S.admin);if(!ar)GT=0;const A=GT?AIR:CARS,own=GT?S.ownA:S.own,sel=GT?S.ac:S.car,ids=GT?AIR.map((c,i)=>i):ORD;
 show(`<h2>${GT?'HANGAR':'GARAGE'}</h2>${ar?`<div><button class="btn m${GT?' s':''}" onclick="garage(0)">&#128663; GARAGE</button> <button class="btn m${GT?'':' s'}" onclick="garage(1)">&#9992; HANGAR</button></div>`:''}<div>Cash ${mny()} · Best score ${S.best|0}</div><div class=grid>`+ids.filter(i=>!A[i].secret||own.includes(i)||S.admin).map(i=>{const c=A[i],ow=own.includes(i),lk=!S.admin&&!ow&&(c.lock>S.best||c.unl);return`<div class="card ${sel==i?'sel':''}"><canvas id=p${i} width=120 height=84 ${lk?'style=opacity:.35':''}></canvas><b>${c.n}</b><br><small>${c.cls} · ${c.sp} mph</small><br>${c.pd?'<small style=color:#ffb020>'+c.pd+'</small><br>':''}`+(ow?`<button class="btn s m" onclick="${GT?'S.ac':'S.car'}=${i};save();garage()">${sel==i?'✔ Selected':'Select'}</button>`:lk?`<small>🔒 ${c.ul||'Reach score '+c.lock}</small>`:`<button class="btn s m" ${S.money<c.cost?'disabled':''} onclick=${GT?'buyA':'buy'}(${i})>Buy $${c.cost}</button>`)+`</div>`}).join('')+`</div><button class="btn s" onclick=menu()>BACK</button>`);
 ids.forEach(i=>{const e=$('#p'+i);if(!e)return;const q=e.getContext('2d');if(GT){q.translate(60,44);q.scale(.8,.8);drawAir(q,0,0,A[i],{t:0})}else{q.translate(60,42);q.rotate(Math.PI/2);q.scale(.8,.8);drawCar(q,0,0,A[i],{})}})}
-let SHA=0;function shop(){if(!(S.s3||S.admin))SHA=0;const c=SHA?AIR[S.ac]:CARS[S.car],u=SHA?U('a'+S.ac):U(S.car);show(`<h2>UPGRADE SHOP</h2><div>${c.n} · Cash <b>${mny()}</b></div>${(S.s3||S.admin)?'<button class="btn s m" onclick="SHA=!SHA;shop()">Upgrading: '+(SHA?'AIRCRAFT':'CAR')+' (tap to switch)</button>':''}`+(SHA?AUP:UP).map((n,i)=>{if(!SHA&&n[2]&&!S.s2)return'';if(!SHA&&n[4]!=null&&!(u[n[4]]|0)&&!CARS[S.car].ptank&&CARS[S.car].pk!='gunner')return'';const l=u[i]|0,cost=Math.round(8*(l+1)**1.8*(n[2]?6:1)*(n[3]||1)*(SHA?4:1));return`<div class=row><div><b>${n[0]}</b> <span class=pips>${'■'.repeat(l)}${'□'.repeat(5-l)}</span><br><small>${n[1]}</small></div>${l>=5?'<b>MAX</b>':`<button class="btn s m" ${S.money<cost?'disabled':''} onclick="up(${i},${cost})">$${cost}</button>`}</div>`}).join('')+`<h2 style=margin-top:6px>RUN BOOSTERS</h2><small>One-use. Switch them on in the loadout before a run.</small>`+BO.filter(b=>!b.s2||S.s2).map(b=>`<div class=row><div><b>${b.n}</b> <small>owned ${S.inv[b.k]||0}</small><br><small>${b.d}</small></div><button class="btn s m" ${S.money<b.p?'disabled':''} onclick="bb('${b.k}',${b.p})">$${b.p}</button></div>`).join('')+`<button class="btn s" onclick=garage(${SHA?1:0})>CHANGE ${SHA?'AIRCRAFT':'CAR'}</button><button class="btn s" onclick=menu()>BACK</button>`)}
+let SHA=0;function shop(){if(!(S.s3||S.admin))SHA=0;const c=SHA?AIR[S.ac]:CARS[S.car],u=SHA?U('a'+S.ac):U(S.car);show(`<h2>UPGRADE SHOP</h2><div>${c.n} · Cash <b>${mny()}</b></div>${(S.s3||S.admin)?'<button class="btn s m" onclick="SHA=!SHA;shop()">Upgrading: '+(SHA?'AIRCRAFT':'CAR')+' (tap to switch)</button>':''}`+(SHA?AUP:UP).map((n,i)=>{if(!SHA&&n[2]&&!S.s2)return'';if(n[4]!=null&&!(u[n[4]]|0)&&(SHA||(!CARS[S.car].ptank&&CARS[S.car].pk!='gunner')))return'';const l=u[i]|0,cost=Math.round(8*(l+1)**1.8*(n[2]?6:1)*(n[3]||1)*(SHA?4:1));return`<div class=row><div><b>${n[0]}</b> <span class=pips>${'■'.repeat(l)}${'□'.repeat(5-l)}</span><br><small>${n[1]}</small></div>${l>=5?'<b>MAX</b>':`<button class="btn s m" ${S.money<cost?'disabled':''} onclick="up(${i},${cost})">$${cost}</button>`}</div>`}).join('')+`<h2 style=margin-top:6px>RUN BOOSTERS</h2><small>One-use. Switch them on in the loadout before a run.</small>`+BO.filter(b=>!b.s2||S.s2).map(b=>`<div class=row><div><b>${b.n}</b> <small>owned ${S.inv[b.k]||0}</small><br><small>${b.d}</small></div><button class="btn s m" ${S.money<b.p?'disabled':''} onclick="bb('${b.k}',${b.p})">$${b.p}</button></div>`).join('')+`<button class="btn s" onclick=garage(${SHA?1:0})>CHANGE ${SHA?'AIRCRAFT':'CAR'}</button><button class="btn s" onclick=menu()>BACK</button>`)}
 function up(i,c){if(S.money>=c){if(!S.inf)S.money-=c;const a=SHA?U('a'+S.ac):U(S.car);a[i]=(a[i]|0)+1;save();shop()}}
 let SEL={};
 function prep(m){aud();sfx('clk');const own=BO.filter(b=>S.inv[b.k]>0&&okB(b,m));if(!own.length)return start(m);show(`<h2>LOADOUT</h2><small>Boosters are used up when the run starts. Boosters that do not work in the air are hidden there, and are not used up if you pick Sky Skip.</small>`+own.map(b=>`<div class=row><div><b>${b.n}</b> <small>×${S.inv[b.k]}</small><br><small>${b.d}</small></div><button class="btn s m" id=b_${b.k} onclick="tg('${b.k}')">${SEL[b.k]?'ON ✔':'OFF'}</button></div>`).join('')+`<button class=btn onclick="start('${m}')">GO!</button><button class="btn s" onclick=menu()>BACK</button>`)}
@@ -667,9 +667,11 @@ show('<h2>ACHIEVEMENTS</h2><div><b>'+got.length+'</b> / '+ACH.length+' unlocked 
 const boot=()=>{if(S.seen!==VER&&HAD)whatsNew();else{S.seen=VER;save();menu()}};startIntro(boot);requestAnimationFrame(loop);
 
 
-/* ===== v4.2: GUN, RELOAD, BLAST GUARD, REPAIRABILITY, TANK, GUNNER, ACHIEVEMENTS ===== */
+/* ===== v4.3: pointer-aimed weapons (cars + aircraft), blasts kill everything, merged achievements ===== */
 (()=>{
 const OK=m=>/^(story|endless)/.test(m)&&!/3$/.test(m),hy=Math.hypot,PI=Math.PI;
+const inMode=()=>G.run&&!G.cine&&G.m!='cop'&&G.m!='intro'&&(G.air||OK(G.m));
+const AIM={x:260,y:300,has:0,down:0};
 const WP=[null,
 {n:'Tiny Pistols',dm:1,cd:.45,sp:1000,k:2,sz:3},
 {n:'Twin SMGs',dm:1.4,cd:.28,sp:1100,k:2,sz:3},
@@ -677,86 +679,124 @@ const WP=[null,
 {n:'Grenade Launcher',dm:3,cd:.9,sp:800,k:1,sz:6,R:75,hy:95},
 {n:'RPG Rocket Launcher',dm:6,cd:1.3,sp:900,k:1,sz:9,R:160,hy:260}];
 const TKW={n:'Tank Cannon',dm:4,cd:1.6,sp:850,k:1,sz:8,R:60,hy:80,tank:1};
-UP.push(['Gun','Mount a weapon (fire with F). L1 Tiny Pistols, L2 Twin SMGs, L3 Scatter Guns, L4 Grenade Launcher, L5 RPG that blasts whole lanes (Story 2 reward)',1,50],
+const AHP={bird:1,loon:1,drone:1,msl:1,hom:1,sam:1,jet:3,heli:4,ufo:3,sat:5,ast:6,liner:6,af1:14};
+const UPN=[['Gun','Mount a weapon. CLICK anywhere to fire at your pointer (F also fires on the ground). L1 Tiny Pistols, L2 Twin SMGs, L3 Scatter Guns, L4 Grenade Launcher, L5 RPG that wipes out whole lanes (Story 2 reward)',1,50],
 ['Reload','Faster reloading, -15% delay per level (needs the Gun)',1,12,6],
 ['Blast Guard','Protects you from your own explosions, -20% per level (needs the Gun)',1,14,6],
-['Repairability','ONE repair per run (press R): restores 25 / 40 / 60 / 80 / 100% health by level (Story 2 reward)',1,20]);
-CARS.push({n:'Behemoth',cls:'HEAVY TANK',col:'#4d5a3a',sp:100,ac:.55,hd:.7,t:1,w:52,h:96,cost:9000,lock:0,ptank:1,pk:'ptank',pd:'\ud83d\udca5 Tank: 4.5x health and a cannon (F) with big shells that can take down helicopters. REALLY slow.'},
+['Repairability','ONE repair per run (press R): restores 25 / 40 / 60 / 80 / 100% health by level (Story 2 reward)',1,20]];
+if(UP.length<7)UP.push(...UPN);if(AUP.length<7)AUP.push(...UPN);
+if(!CARS.some(c=>c.ptank)){CARS.push({n:'Behemoth',cls:'HEAVY TANK',col:'#4d5a3a',sp:100,ac:.55,hd:.7,t:1,w:52,h:96,cost:9000,lock:0,ptank:1,pk:'ptank',pd:'\ud83d\udca5 Tank: 4.5x health and a cannon (click or F) with big shells that can take down helicopters. REALLY slow.'},
 {n:'Gunner',cls:'ARMED',col:'#20242b',sp:200,ac:1.4,hd:1.1,t:2,w:44,h:78,armed:1,cost:4000,lock:0,unl:1,ul:'Shoot a helicopter with the Tank',pk:'gunner',pd:'\ud83d\udd2b Built-in gun: weapons start at level 3 even without upgrades and reload 25% faster.'});
-ORD.length=0;[...CARS.keys()].sort((a,b)=>CARS[a].sp-CARS[b].sp).forEach(i=>ORD.push(i));
-/* ---- achievements ---- */
-const ACH=[['gunBuy','Armed and Dangerous','Install the Gun'],['gun5','Rocket Man','Upgrade the Gun to the RPG'],['firstKill','First Blood','Destroy a vehicle with your weapon'],['gk25','Gunslinger','Destroy 25 vehicles with weapons'],['multi','Lane Clearer','Wreck 3 or more vehicles with a single blast'],['reloadBuy','Quick Hands','Install Reload'],['reload5','Lightning Reload','Max out Reload'],['guardBuy','Shielded','Install Blast Guard'],['guard5','Fireproof','Max out Blast Guard'],['selfHit','Friendly Fire','Hurt yourself with your own blast'],['heliAnger','Hornet\u2019s Nest','Anger a helicopter by firing at it'],['heliFlee','Smoke Screen','Scare a helicopter away with an upper-level gun'],['tankHeli','Tank vs Chopper','Shoot a helicopter with the Tank'],['heliDown','Chopper Down','Take down a helicopter'],['buyTank','Heavy Metal','Buy the Behemoth tank'],['armedUnlock','Gunner Unlocked','Unlock the armed car'],['repBuy','Pit Crew','Install Repairability'],['repUse','Fixed Up','Use your repair in a run'],['rep5','Full Service','Max out Repairability']];
-const TO=document.createElement('div');TO.style.cssText='position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#161b26ee;border:1px solid #ffb020;border-radius:10px;padding:8px 14px;font:800 13px system-ui;color:#ffd54a;z-index:9;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center';$('#st').appendChild(TO);
-function toast(t){TO.textContent=t;TO.style.opacity=1;clearTimeout(TO.h);TO.h=setTimeout(()=>TO.style.opacity=0,3200)}
-function ach(id){S.ach=S.ach||{};if(S.ach[id])return;S.ach[id]=1;save();const a=ACH.find(x=>x[0]==id);toast('\ud83c\udfc6 ACHIEVEMENT: '+a[1])}
-function achMenu(){const a=S.ach||{};show('<h2>ACHIEVEMENTS</h2><div>'+ACH.filter(x=>a[x[0]]).length+' / '+ACH.length+'</div>'+ACH.map(x=>'<div class=row><div><b>'+(a[x[0]]?'&#127942; ':'&#128274; ')+x[1]+'</b><br><small>'+x[2]+'</small></div></div>').join('')+'<button class="btn s" onclick=menu()>BACK</button>')}
-/* ---- weapon logic ---- */
-const gLv=()=>{const C=G.car;if(!C||C.ptank)return 0;const l=(S.s2||S.admin)?(U(S.car)[6]|0):0;return C.pk=='gunner'?Math.max(3,l):l};
-function fireGun(){if(!G.run||G.dead||paused||G.air||G.cine||!OK(G.m)||G.gcd>0)return;const C=G.car,tk=!!C.ptank,l=gLv();if(!tk&&!l)return;const w=tk?TKW:WP[l],rl=G.u[7]|0;G.gcd=Math.max(.12,w.cd*(1-.15*rl)*(C.pk=='gunner'?.75:1));G.gmax=G.gcd;G.gf=.09;G.pb=G.pb||[];
-const mk=(dx,vx)=>G.pb.push({x:G.px+dx,y:G.py-C.h/2,vx,vy:-w.sp,w,l:tk?0:l,tk,life:.7});
-if(w.k==3)[-1,0,1].forEach(i=>mk(i*8,i*w.sp2*w.sp));else if(w.k==2)[-1,1].forEach(i=>mk(i*C.w*.3,0));else mk(0,0);
-if(l>=4||tk)G.shake=Math.max(G.shake,.12);sfx('shot');spark(G.px,G.py-C.h/2,w.k==1?8:3)}
-const kills=()=>{S.gk=(S.gk|0)+1;if(S.gk==1)ach('firstKill');if(S.gk>=25)ach('gk25');if(S.gk%5==0)save()};
-function hurt(o,k,dm){if(k=='cop'||k=='ct'){o.hp-=dm;spark(o.x,o.y,4);if(o.hp<=0){o.dead=1;kills()}}else{o.hp=(o.hp??(o.tank?9:3))-dm;spark(o.x,o.y,4);if(o.hp<=0){o.dead=1;boom(o.x,o.y,28);G.down++;earn(2);sfx('down');msg(o.tank?'TANK DESTROYED  +$2.00':'ARMED CAR DOWN  +$2.00','#ffd54a');kills()}}}
-function armedUnlock(){const i=CARS.findIndex(c=>c.pk=='gunner');if(i>=0&&!S.own.includes(i)){S.own.push(i);save();msg('ARMED CAR UNLOCKED: GUNNER!','#7fffd4');ach('armedUnlock')}}
+ORD.length=0;[...CARS.keys()].sort((a,b)=>CARS[a].sp-CARS[b].sp).forEach(i=>ORD.push(i))}
+/* old v4.2 gun achievements lived in their own menu: drop those leftovers, the real ones are below */
+['gunBuy','gun5','firstKill','gk25','multi','reloadBuy','reload5','guardBuy','guard5','selfHit','heliAnger','heliFlee','tankHeli','heliDown','buyTank','armedUnlock','repBuy','repUse','rep5'].forEach(k=>{try{delete S.ach[k]}catch(e){}});
+/* ---- achievements (added to the main Achievements menu) ---- */
+const mxl=i=>Math.max(0,...Object.keys(S.up).map(k=>(S.up[k]||[])[i]|0)),st=k=>{S.stat[k]=(S.stat[k]|0)+1},st1=k=>{if(!S.stat[k])S.stat[k]=1};
+defA('g_gun','\ud83d\udd2b','Armed and Dangerous','Install a Gun on any car or aircraft',2,200,()=>mxl(6)>=1);
+defA('g_aim','\ud83d\uddb1\ufe0f','Sharpshooter','Fire a weapon by clicking',2,100,()=>aS('g_aim')>=1);
+defA('g_k1','\ud83d\udca5','First Blood','Destroy something with a weapon',2,150,()=>(S.gk|0)>=1);
+defA('g_rl','\u23f1\ufe0f','Quick Hands','Install Reload',2,150,()=>mxl(7)>=1);
+defA('g_bg','\ud83d\udee1\ufe0f','Shielded','Install Blast Guard',2,150,()=>mxl(8)>=1);
+defA('g_rp','\ud83d\udd27','Pit Crew','Install Repairability',2,150,()=>mxl(9)>=1);
+defA('g_ru','\ud83e\ude79','Fixed Up','Use your repair in a run',2,200,()=>aS('g_ru')>=1);
+defA('g_self','\ud83e\udd26','Friendly Fire','Hurt yourself with your own blast',2,100,()=>aS('g_self')>=1);
+defA('g_tank','\ud83e\ude96','Heavy Metal','Own the Behemoth tank',2,300,()=>oc('Behemoth'));
+defA('g_rpg','\ud83d\ude80','Rocket Man','Upgrade a Gun to the RPG',3,1000,()=>mxl(6)>=5);
+defA('g_k25','\ud83c\udfaf','Gunslinger','Destroy 25 targets with weapons',3,500,()=>(S.gk|0)>=25);
+defA('g_multi','\ud83e\udde8','Lane Clearer','Wreck 3 or more targets with a single blast',3,500,()=>aS('g_multi')>=1);
+defA('g_rl5','\u23f1\ufe0f','Lightning Reload','Max out Reload',3,800,()=>mxl(7)>=5);
+defA('g_bg5','\ud83d\udee1\ufe0f','Fireproof','Max out Blast Guard',3,800,()=>mxl(8)>=5);
+defA('g_rp5','\ud83d\udd27','Full Service','Max out Repairability',3,800,()=>mxl(9)>=5);
+defA('g_ha','\ud83d\udc1d','Hornet\u2019s Nest','Anger a helicopter by firing at it',3,200,()=>aS('g_ha')>=1);
+defA('g_hf','\ud83d\udca8','Smoke Screen','Scare a helicopter away with a level 4+ weapon',3,400,()=>aS('g_hf')>=1);
+defA('g_ht','\ud83e\ude96','Tank vs Chopper','Shoot a helicopter with the Tank',3,500,()=>aS('g_ht')>=1);
+defA('g_hd','\ud83d\ude81','Chopper Down','Take down a helicopter',3,800,()=>aS('g_hd')>=1);
+defA('g_gunner','\ud83d\udd2b','Gunner Unlocked','Unlock the armed car',3,500,()=>oc('Gunner'));
+defA('g_air','\u2708\ufe0f','Sky Armed','Fire a weapon from an aircraft',3,300,()=>aS('g_airshot')>=1);
+defA('g_ak','\ud83d\udee9\ufe0f','Dogfighter','Shoot down 10 aircraft or missiles',3,400,()=>aS('ak')>=10);
+defA('g_k200','\u2620\ufe0f','Arsenal','Destroy 200 targets with weapons',4,3000,()=>(S.gk|0)>=200);
+defA('g_sky','\ud83c\udf29\ufe0f','Sky Blaster','Wreck 5 targets with one blast in the air',4,1500,()=>aS('g_sky')>=1);
+/* ---- weapons ---- */
+const gLv=()=>{const C=G.car;if(!C||C.ptank)return 0;const l=(S.s2||S.admin)?(G.u[6]|0):0;return C.pk=='gunner'?Math.max(3,l):l};
+const kills=()=>{S.gk=(S.gk|0)+1;if(S.gk%5==0)save()};
+function fire(ptr){if(!inMode()||G.dead||paused||G.gcd>0)return;const C=G.car,tk=!!C.ptank,l=gLv();if(!tk&&!l)return;const w=tk?TKW:WP[l],rl=G.u[7]|0;
+G.gcd=Math.max(.12,w.cd*(1-.15*rl)*(C.pk=='gunner'?.75:1));G.gmax=G.gcd;G.gf=.09;G.pb=G.pb||[];
+const ox=G.px,oy=G.py-C.h*.45,tX=AIM.has?AIM.x:G.px,tY=AIM.has?AIM.y:G.py-300;let ang=Math.atan2(tY-oy,tX-ox);if(hy(tX-ox,tY-oy)<24)ang=-PI/2;
+const mk=(da,off)=>{const a=ang+da;G.pb.push({x:ox+Math.cos(ang+PI/2)*off,y:oy+Math.sin(ang+PI/2)*off,vx:Math.cos(a)*w.sp,vy:Math.sin(a)*w.sp,a,w,l:tk?0:l,tk,life:w.R?1.6:.8,tx:tX,ty:tY})};
+if(w.k==3)[-1,0,1].forEach(i=>mk(i*w.sp2,i*6));else if(w.k==2)[-1,1].forEach(i=>mk(0,i*C.w*.3));else mk(0,0);
+if(l>=4||tk)G.shake=Math.max(G.shake,.12);sfx('shot');spark(ox,oy,w.k==1?8:3);if(ptr)st1('g_aim');if(G.air)st1('g_airshot')}
+function killTf(o){if(o.dead)return;o.dead=1;boom(o.x,o.y,o.tank?28:14);if(o.tank||o.armed){G.down++;earn(2);sfx('down');msg(o.tank?'TANK DESTROYED  +$2.00':'ARMED CAR DOWN  +$2.00','#ffd54a')}else earn(.25);kills()}
+function hurt(o,k,dm){spark(o.x,o.y,4);if(k=='cop'||k=='ct'){o.hp-=dm;if(o.hp<=0){o.dead=1;kills()}}else{o.hp=(o.hp??(o.tank?9:o.armed?3:o.truck?8:4))-dm;if(o.hp<=0)killTf(o)}}
+function airKill(o){o.dead=1;boom(o.x,o.y,10);if(['jet','heli','ufo','drone'].includes(o.k)){G.down++;earn(1)}if(o.k!='bird'&&o.k!='loon')st('ak');kills()}
+function hurtA(o,dm){spark(o.x,o.y,4);o.hp=(o.hp??AHP[o.k]??2)-dm;if(o.hp<=0)airKill(o)}
+function armedUnlock(){const i=CARS.findIndex(c=>c.pk=='gunner');if(i>=0&&!S.own.includes(i)){S.own.push(i);save();msg('ARMED CAR UNLOCKED: GUNNER!','#7fffd4')}}
 function heliHit(l,tk){const h=G.heli;if(!h||h.st!='in')return;
-if(tk){armedUnlock();ach('tankHeli');h.hp=(h.hp??4)-1;boom(h.x,h.y,12);msg('HELICOPTER HIT!','#7fffd4');if(h.hp<=0){boom(h.x,h.y,40);G.heli=null;G.well=-40;G.down++;earn(6);msg('HELICOPTER DOWN!  +$6.00','#ffd54a');ach('heliDown')}return}
-if(!(h.ang>0)){msg('ANGRY HELICOPTER!','#f55');ach('heliAnger')}h.ang=9;h.bt=.5;
-if(l>=4){G.hs=h;G.heli=null;G.well=-60;G.smk=G.smk||[];for(let i=0;i<6;i++)G.smk.push({x:h.x+R(-30,30),y:h.y+R(-20,20),r:R(26,44),l:3.6,m:3.6,h:1});msg('THE HELICOPTER FLEES THE SMOKE','#7fe3ff');ach('heliFlee')}}
+if(tk){armedUnlock();st1('g_ht');h.hp=(h.hp??4)-1;boom(h.x,h.y,12);msg('HELICOPTER HIT!','#7fffd4');if(h.hp<=0){boom(h.x,h.y,40);G.heli=null;G.well=-40;G.down++;earn(6);msg('HELICOPTER DOWN!  +$6.00','#ffd54a');st1('g_hd')}return}
+if(!(h.ang>0)){msg('ANGRY HELICOPTER!','#f55');st1('g_ha')}h.ang=9;h.bt=.5;
+if(l>=4){G.hs=h;G.heli=null;G.well=-60;G.smk=G.smk||[];for(let i=0;i<6;i++)G.smk.push({x:h.x+R(-30,30),y:h.y+R(-20,20),r:R(26,44),l:3.6,m:3.6,h:1});msg('THE HELICOPTER FLEES THE SMOKE','#7fe3ff');st1('g_hf')}}
 function blast(x,y,w,l,tk){G.ex=G.ex||[];G.ex.push({x,y,R:w.R,hy:w.hy,t:0});boom(x,y,tk?10:l==5?26:14);G.shake=Math.max(G.shake,l==5?.5:.25);sfx('down');
 const inz=o=>Math.abs(o.x-x)<w.R+(o.w||40)/2&&Math.abs(o.y-y)<w.hy+(o.h||60)/2;let n=0;
-G.cp.forEach(c=>{if(!c.dead&&inz(c)){hurt(c,'cop',w.dm);n++}});G.ct.forEach(c=>{if(!c.dead&&inz(c)){hurt(c,'ct',w.dm);n++}});
-G.tf.forEach(t=>{if(!t.dead&&inz(t)){if(t.tank||t.armed)hurt(t,'tf',w.dm);else{t.dead=1;boom(t.x,t.y,8);n++}}});
-const h=G.heli;if(h&&h.st=='in'&&inz({x:h.x,y:h.y,w:70,h:70}))heliHit(l,tk);if(n>=3)ach('multi');
-if(!G.dead&&G.gh<=0&&hy(G.px-x,(G.py-y)*.8)<w.R*.7){const sd=(tk?8:l==5?24:12)*Math.max(0,1-.2*(G.u[8]|0));if(sd>0){dmg(sd,1);msg('SELF BLAST!','#f66');ach('selfHit')}else msg('BLAST GUARD!','#7fffd4')}}
+G.cp.forEach(c=>{if(!c.dead&&inz(c)){c.dead=1;kills();n++}});
+if(G.air){G.ao.forEach(o=>{if(!o.dead&&!KO[o.k].zone&&inz(o)){airKill(o);n++}})}
+else{G.ct.forEach(c=>{if(!c.dead&&inz(c)){c.dead=1;kills();n++}});G.tf.forEach(t=>{if(!t.dead&&inz(t)){killTf(t);n++}});G.tr.forEach(t=>{if(inz(t))t.d=1});
+const h=G.heli;if(h&&h.st=='in'&&inz({x:h.x,y:h.y,w:70,h:70}))heliHit(l,tk)}
+G.bl=G.bl.filter(b=>!inz(b));if(n>=3)st1('g_multi');if(n>=5&&G.air)st1('g_sky');
+if(!G.dead&&G.gh<=0&&hy(G.px-x,(G.py-y)*.8)<w.R*.7){const sd=(tk?8:l==5?24:12)*Math.max(0,1-.2*(G.u[8]|0));if(sd>0){dmg(sd,1);msg('SELF BLAST!','#f66');st1('g_self')}else msg('BLAST GUARD!','#7fffd4')}}
 const near=(p,o,r)=>Math.abs(p.x-o.x)<(o.w||40)/2+r&&Math.abs(p.y-o.y)<(o.h||60)/2+r;
-function gunUpd(dt){if(!G.run||G.air||G.cine||!OK(G.m))return;G.pb=G.pb||[];G.ex=G.ex||[];G.smk=G.smk||[];G.gcd=Math.max(0,(G.gcd||0)-dt);G.gf=Math.max(0,(G.gf||0)-dt);
-G.pb.forEach(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;const w=p.w,pr=w.sz+5;if(p.l==5||p.tk)G.smk.push({x:p.x,y:p.y+14,r:5,l:.5,m:.5});let hit=null;
-for(const c of G.cp)if(!c.dead&&near(p,c,pr)){hit=['cop',c];break}
+function gunUpd(dt){if(!inMode())return;const C=G.car;G.pb=G.pb||[];G.ex=G.ex||[];G.smk=G.smk||[];G.gcd=Math.max(0,(G.gcd||0)-dt);G.gf=Math.max(0,(G.gf||0)-dt);
+G.aim=AIM.has?Math.atan2(AIM.y-(G.py-C.h*.45),AIM.x-G.px):-PI/2;if(AIM.down&&!paused)fire(1);
+G.pb.forEach(p=>{p.life-=dt;const sp=hy(p.vx,p.vy);p.x+=p.vx*dt;p.y+=p.vy*dt;const w=p.w,pr=w.sz+5;if(p.l==5||p.tk)G.smk.push({x:p.x,y:p.y,r:5,l:.5,m:.5});let hit=null;
+if(G.air){for(const c of G.cp)if(!c.dead&&near(p,c,pr)){hit=['ac',c];break}
+if(!hit)for(const o of G.ao)if(!o.dead&&!KO[o.k].zone&&!(o.k=='sam'&&o.wt>0)&&near(p,o,pr)){hit=['ao',o];break}}
+else{for(const c of G.cp)if(!c.dead&&near(p,c,pr)){hit=['cop',c];break}
 if(!hit)for(const c of G.ct)if(!c.dead&&near(p,c,pr)){hit=['ct',c];break}
-if(!hit)for(const t of G.tf)if(!t.dead&&(t.tank||t.armed)&&near(p,t,pr)){hit=['tf',t];break}
-if(!hit&&G.heli&&G.heli.st=='in'&&near(p,{x:G.heli.x,y:G.heli.y,w:70,h:70},pr))hit=['heli'];
-if(hit||p.life<=0||p.y<-30){p.d=1;if(w.R)blast(p.x,p.y,w,p.l,p.tk);else if(hit){if(hit[0]=='heli')heliHit(p.l,0);else hurt(hit[1],hit[0],w.dm)}}});
-G.pb=G.pb.filter(p=>!p.d);G.ex.forEach(e=>e.t+=dt*2.2);G.ex=G.ex.filter(e=>e.t<1);G.smk.forEach(s=>{s.l-=dt;s.y+=G.speed*2.1*dt;s.r+=dt*12});G.smk=G.smk.filter(s=>s.l>0);G.tf=G.tf.filter(t=>!t.dead);
-const h=G.heli;if(h&&h.st=='in'&&h.ang>0&&!G.dead){h.ang-=dt;h.bt=(h.bt||0)-dt;if(h.bt<=0&&G.empT<=0){h.bt=1.1;const dx=G.px+G.vx*.3-h.x,dy=G.py-h.y,L=hy(dx,dy)||1;G.bl.push({x:h.x,y:h.y+30,vx:dx/L*520,vy:dy/L*520,k:1,dm:15});sfx('shot')}}
+if(!hit)for(const t of G.tf)if(!t.dead&&near(p,t,pr)){hit=['tf',t];break}
+if(!hit&&G.heli&&G.heli.st=='in'&&near(p,{x:G.heli.x,y:G.heli.y,w:70,h:70},pr))hit=['heli']}
+const reach=w.R&&hy(p.tx-p.x,p.ty-p.y)<=sp*dt*1.2,out=p.x<-40||p.x>W+40||p.y<-40||p.y>H+40;
+if(hit||reach||p.life<=0||out){p.d=1;if(w.R){if(hit||reach||p.life<=0)blast(p.x,p.y,w,p.l,p.tk)}else if(hit){if(hit[0]=='heli')heliHit(p.l,0);else if(hit[0]=='ac'){hit[1].hp-=w.dm;spark(hit[1].x,hit[1].y,4);if(hit[1].hp<=0){hit[1].dead=1;kills()}}else if(hit[0]=='ao')hurtA(hit[1],w.dm);else hurt(hit[1],hit[0],w.dm)}}});
+G.pb=G.pb.filter(p=>!p.d);G.ex.forEach(e=>e.t+=dt*2.2);G.ex=G.ex.filter(e=>e.t<1);G.smk.forEach(s=>{s.l-=dt;s.y+=G.speed*2.1*dt;s.r+=dt*12});G.smk=G.smk.filter(s=>s.l>0);if(!G.air)G.tf=G.tf.filter(t=>!t.dead);
+const h=G.heli;if(!G.air&&h&&h.st=='in'&&h.ang>0&&!G.dead){h.ang-=dt;h.bt=(h.bt||0)-dt;if(h.bt<=0&&G.empT<=0){h.bt=1.1;const dx=G.px+G.vx*.3-h.x,dy=G.py-h.y,L=hy(dx,dy)||1;G.bl.push({x:h.x,y:h.y+30,vx:dx/L*520,vy:dy/L*520,k:1,dm:15});sfx('shot')}}
 if(G.hs&&!G.smk.some(s=>s.h)){G.heli=G.hs;G.hs=null;G.heli.st='in';G.heli.y=-170;G.heli.ang=0;G.heli.bt=0;G.well=0;msg('THE HELICOPTER IS BACK','#f55')}}
-function fixCar(){if(!G.run||G.dead||paused||G.air||G.cine||!OK(G.m)||G.fixed)return;const l=(S.s2||S.admin)?(G.u[9]|0):0;if(!l)return;G.fixed=1;const pc=[0,.25,.4,.6,.8,1][l];G.hp=Math.min(G.hm,G.hp+G.hm*pc);sfx('chk');spark(G.px,G.py,24);msg('REPAIRED +'+Math.round(pc*100)+'% HEALTH','#7fffa0');ach('repUse')}
+function fixCar(){if(!inMode()||G.dead||paused||G.fixed)return;const l=(S.s2||S.admin)?(G.u[9]|0):0;if(!l)return;G.fixed=1;const pc=[0,.25,.4,.6,.8,1][l];G.hp=Math.min(G.hm,G.hp+G.hm*pc);sfx('chk');spark(G.px,G.py,24);msg('REPAIRED +'+Math.round(pc*100)+'% HEALTH','#7fffa0');st1('g_ru')}
 /* ---- drawing ---- */
 function ptDraw(q,X,Y,v,o){q.save();q.translate(X,Y);q.rotate(o.tilt||0);const w=v.w,h=v.h;q.fillStyle='rgba(0,0,0,.4)';rr(q,-w/2+6,-h/2+8,w,h,8);q.fill();q.fillStyle='#22261c';rr(q,-w/2,-h/2,13,h,4);q.fill();rr(q,w/2-13,-h/2,13,h,4);q.fill();q.strokeStyle='#12150d';q.lineWidth=2;for(let y=-h/2+4;y<h/2-2;y+=7){q.beginPath();q.moveTo(-w/2,y);q.lineTo(-w/2+13,y);q.moveTo(w/2-13,y);q.lineTo(w/2,y);q.stroke()}
-const gr=q.createLinearGradient(-w/2,0,w/2,0);gr.addColorStop(0,'#3d4a2a');gr.addColorStop(.5,'#6b7d4a');gr.addColorStop(1,'#3a4829');q.fillStyle=gr;rr(q,-w/2+10,-h/2+4,w-20,h-8,6);q.fill();q.fillStyle='#2b3320';q.fillRect(-4,-h/2-8,8,h*.5);q.fillStyle='#5a6b3d';q.beginPath();q.arc(0,4,w*.27,0,7);q.fill();q.fillStyle='#3d4a2a';q.beginPath();q.arc(0,4,w*.12,0,7);q.fill();q.restore()}
-function mount(q,X,Y,C){const l=gLv();q.save();q.translate(X,Y);
-if(l==1)[-1,1].forEach(s=>{q.fillStyle='#444';q.fillRect(s*C.w*.3-1.5,-C.h*.42,3,9);q.fillStyle='#ccc';q.fillRect(s*C.w*.3-1,-C.h*.42,2,3)});
+const gr=q.createLinearGradient(-w/2,0,w/2,0);gr.addColorStop(0,'#3d4a2a');gr.addColorStop(.5,'#6b7d4a');gr.addColorStop(1,'#3a4829');q.fillStyle=gr;rr(q,-w/2+10,-h/2+4,w-20,h-8,6);q.fill();if(!o.nb){q.fillStyle='#2b3320';q.fillRect(-4,-h/2-8,8,h*.5)}q.fillStyle='#5a6b3d';q.beginPath();q.arc(0,4,w*.27,0,7);q.fill();q.fillStyle='#3d4a2a';q.beginPath();q.arc(0,4,w*.12,0,7);q.fill();q.restore()}
+function mount(q,X,Y,C){const l=gLv(),a=(G.aim==null?-PI/2:G.aim)+PI/2;q.save();q.translate(X,Y);q.rotate(a);
+if(C.ptank){q.fillStyle='#2b3320';q.fillRect(-4,-C.h/2-8,8,C.h*.5+8)}
+else if(l==1)[-1,1].forEach(s=>{q.fillStyle='#444';q.fillRect(s*C.w*.3-1.5,-C.h*.42,3,9);q.fillStyle='#ccc';q.fillRect(s*C.w*.3-1,-C.h*.42,2,3)});
 else if(l==2)[-1,1].forEach(s=>{q.fillStyle='#2a2f38';q.fillRect(s*C.w*.3-3.5,-C.h*.3,7,9);q.fillStyle='#555';q.fillRect(s*C.w*.3-1.5,-C.h*.46,3,16)});
 else if(l==3)[-1,1].forEach(s=>{q.fillStyle='#555';q.fillRect(s*C.w*.3-3,-C.h*.46,6,16);q.fillStyle='#e90';q.fillRect(s*C.w*.3-4,-C.h*.46,8,3)});
 else if(l==4){q.fillStyle='#4a5a3a';rr(q,-6,-C.h*.5-8,12,32,3);q.fill();q.fillStyle='#222';q.fillRect(-5,-C.h*.5-10,10,4)}
 else if(l==5){q.fillStyle='#3e4a2c';rr(q,-7,-C.h*.5-16,14,52,4);q.fill();q.fillStyle='#e22';q.beginPath();q.moveTo(-5,-C.h*.5-16);q.lineTo(5,-C.h*.5-16);q.lineTo(0,-C.h*.5-28);q.fill();q.fillStyle='#222';q.fillRect(-10,-C.h*.1,20,4);q.fillRect(-10,C.h*.05,20,4)}
 if(G.gf>0){const tip=C.ptank?-C.h/2-8:-C.h*.5-(l>=4?14:6),r=10+(C.ptank?6:l)*5;q.globalCompositeOperation='lighter';const rg=q.createRadialGradient(0,tip,1,0,tip,r);rg.addColorStop(0,'rgba(255,240,160,.95)');rg.addColorStop(1,'rgba(255,120,20,0)');q.fillStyle=rg;q.fillRect(-r,tip-r,r*2,r*2)}q.restore()}
-function gunDraw(q,X,Y,C){if(C.ptank||gLv())mount(q,X,Y,C);
+function gunDraw(q,X,Y,C){const l=gLv(),tk=!!C.ptank;if(tk||l){mount(q,X,Y,C);if(AIM.has){const w=tk?TKW:WP[l];q.save();q.strokeStyle='rgba(255,255,255,.55)';q.lineWidth=1.5;q.beginPath();q.arc(AIM.x,AIM.y,11,0,7);q.moveTo(AIM.x-17,AIM.y);q.lineTo(AIM.x-6,AIM.y);q.moveTo(AIM.x+6,AIM.y);q.lineTo(AIM.x+17,AIM.y);q.moveTo(AIM.x,AIM.y-17);q.lineTo(AIM.x,AIM.y-6);q.moveTo(AIM.x,AIM.y+6);q.lineTo(AIM.x,AIM.y+17);q.stroke();if(w.R){q.strokeStyle='rgba(255,160,60,.3)';q.beginPath();q.ellipse(AIM.x,AIM.y,w.R,w.hy,0,0,7);q.stroke()}q.restore()}}
 (G.smk||[]).forEach(s=>{q.fillStyle='rgba(150,150,150,'+(.5*s.l/s.m)+')';q.beginPath();q.arc(s.x,s.y,s.r,0,7);q.fill()});
-(G.pb||[]).forEach(p=>{const l=p.tk?6:p.l;
-if(l==1){q.fillStyle='#ffe680';q.beginPath();q.arc(p.x,p.y,2.2,0,7);q.fill()}
-else if(l==2){q.strokeStyle='#ffb040';q.lineWidth=2;q.beginPath();q.moveTo(p.x,p.y);q.lineTo(p.x,p.y+14);q.stroke()}
-else if(l==3){q.fillStyle='#ff7a30';q.beginPath();q.arc(p.x,p.y,3.4,0,7);q.fill()}
-else if(l==4){q.fillStyle='#3a4a2a';q.beginPath();q.arc(p.x,p.y,5.5,0,7);q.fill();q.fillStyle='#9acd32';q.beginPath();q.arc(p.x-1.5,p.y-1.5,2,0,7);q.fill()}
-else if(l==6){q.save();q.globalCompositeOperation='lighter';const rg=q.createRadialGradient(p.x,p.y,1,p.x,p.y,12);rg.addColorStop(0,'#fff0a0');rg.addColorStop(.5,'#ff8a20');rg.addColorStop(1,'rgba(255,60,0,0)');q.fillStyle=rg;q.fillRect(p.x-12,p.y-12,24,24);q.restore()}
-else{q.fillStyle='#d8dde6';q.fillRect(p.x-3,p.y-10,6,22);q.fillStyle='#e22';q.beginPath();q.moveTo(p.x-3,p.y-10);q.lineTo(p.x+3,p.y-10);q.lineTo(p.x,p.y-18);q.fill();q.save();q.globalCompositeOperation='lighter';q.fillStyle='rgba(255,170,50,.9)';q.beginPath();q.arc(p.x,p.y+16+Math.random()*5,6,0,7);q.fill();q.restore()}});
+(G.pb||[]).forEach(p=>{const L=p.tk?6:p.l;q.save();q.translate(p.x,p.y);q.rotate(p.a+PI/2);
+if(L==1){q.fillStyle='#ffe680';q.beginPath();q.arc(0,0,2.2,0,7);q.fill()}
+else if(L==2){q.strokeStyle='#ffb040';q.lineWidth=2;q.beginPath();q.moveTo(0,0);q.lineTo(0,14);q.stroke()}
+else if(L==3){q.fillStyle='#ff7a30';q.beginPath();q.arc(0,0,3.4,0,7);q.fill()}
+else if(L==4){q.fillStyle='#3a4a2a';q.beginPath();q.arc(0,0,5.5,0,7);q.fill();q.fillStyle='#9acd32';q.beginPath();q.arc(-1.5,-1.5,2,0,7);q.fill()}
+else if(L==6){q.globalCompositeOperation='lighter';const rg=q.createRadialGradient(0,0,1,0,0,12);rg.addColorStop(0,'#fff0a0');rg.addColorStop(.5,'#ff8a20');rg.addColorStop(1,'rgba(255,60,0,0)');q.fillStyle=rg;q.fillRect(-12,-12,24,24)}
+else{q.fillStyle='#d8dde6';q.fillRect(-3,-10,6,22);q.fillStyle='#e22';q.beginPath();q.moveTo(-3,-10);q.lineTo(3,-10);q.lineTo(0,-18);q.fill();q.globalCompositeOperation='lighter';q.fillStyle='rgba(255,170,50,.9)';q.beginPath();q.arc(0,16+Math.random()*5,6,0,7);q.fill()}
+q.restore()});
 (G.ex||[]).forEach(e=>{const f=e.t,a=1-f,r=e.R*(.4+.6*f),k=e.hy/e.R;q.save();q.globalCompositeOperation='lighter';const rg=q.createRadialGradient(e.x,e.y,2,e.x,e.y,r);rg.addColorStop(0,'rgba(255,240,170,'+a+')');rg.addColorStop(.5,'rgba(255,120,30,'+a*.7+')');rg.addColorStop(1,'rgba(255,60,0,0)');q.fillStyle=rg;q.beginPath();q.ellipse(e.x,e.y,r,r*k,0,0,7);q.fill();q.strokeStyle='rgba(255,220,140,'+a+')';q.lineWidth=6*a+1;q.beginPath();q.ellipse(e.x,e.y,e.R*f*1.1,e.R*f*1.1*k,0,0,7);q.stroke();q.restore()})}
-function gunHud(){if(G.air||!OK(G.m)||!G.run||G.cine)return;const C=G.car,l=gLv(),rp=(S.s2||S.admin)&&(G.u[9]|0),tk=C.ptank;if(!tk&&!l&&!rp)return;pn(12,76,118,(tk||l)&&rp?52:34);let y=94;if(tk||l){tx((tk?TKW:WP[l]).n+' [F]',20,y,'700 9px system-ui','#cdd5e2');bar(20,y+5,100,6,G.gcd>0?1-G.gcd/(G.gmax||1):1,G.gcd>0?'#ff9a3c':'#7fffa0');y+=24}if(rp)tx(G.fixed?'REPAIR USED':'REPAIR READY [R]',20,y,'700 9px system-ui',G.fixed?'#667':'#7fffa0')}
+function gunHud(){if(!inMode())return;const C=G.car,l=gLv(),rp=(S.s2||S.admin)&&(G.u[9]|0),tk=C.ptank;if(!tk&&!l&&!rp)return;pn(12,76,118,(tk||l)&&rp?52:34);let y=94;if(tk||l){tx((tk?TKW:WP[l]).n+' [CLICK]',20,y,'700 9px system-ui','#cdd5e2');bar(20,y+5,100,6,G.gcd>0?1-G.gcd/(G.gmax||1):1,G.gcd>0?'#ff9a3c':'#7fffa0');y+=24}if(rp)tx(G.fixed?'REPAIR USED':'REPAIR READY [R]',20,y,'700 9px system-ui',G.fixed?'#667':'#7fffa0')}
 /* ---- hooks ---- */
-const _dc=drawCar;drawCar=function(q,X,Y,v,o={}){if(v&&v.ptank)ptDraw(q,X,Y,v,o);else _dc(q,X,Y,v,o);if(v===G.car&&G.run&&!G.air&&q===g&&G.m!='cop'&&OK(G.m))gunDraw(q,X,Y,v)};
+const _dc=drawCar;drawCar=function(q,X,Y,v,o={}){const me=v===G.car&&G.run&&!G.air&&q===g&&G.m!='cop'&&OK(G.m);if(v&&v.ptank)ptDraw(q,X,Y,v,me?Object.assign({},o,{nb:1}):o);else _dc(q,X,Y,v,o);if(me)gunDraw(q,X,Y,v)};
+const _da=drawAir;drawAir=function(q,X,Y,v,o={}){_da(q,X,Y,v,o);if(v===G.car&&G.air&&G.run&&!G.dead&&q===g&&inMode())gunDraw(q,X,Y,v)};
 const _upd=upd;upd=function(dt){_upd(dt);gunUpd(dt)};
+const _au=airUpd;airUpd=function(dt){_au(dt);gunUpd(dt)};
 const _hud=hud;hud=function(){_hud();gunHud()};
 const _ng=newG;newG=function(m,bo){const x=_ng(m,bo);if(x.car&&x.car.ptank&&!/3$/.test(m)){x.hm=450;x.hp=450}return x};
 const _ia=initAir;initAir=function(){_ia();G.hm=100;G.hp=100};
-const _pf=pressFlare;pressFlare=function(){G.air?_pf():fireGun()};
-const _up=up;up=function(i,c){_up(i,c);if(SHA)return;const l=U(S.car)[i]|0;if(i==6&&l>=1)ach('gunBuy');if(i==6&&l>=5)ach('gun5');if(i==7&&l>=1)ach('reloadBuy');if(i==7&&l>=5)ach('reload5');if(i==8&&l>=1)ach('guardBuy');if(i==8&&l>=5)ach('guard5');if(i==9&&l>=1)ach('repBuy');if(i==9&&l>=5)ach('rep5')};
-const _buy=buy;buy=function(i){_buy(i);if(CARS[i]&&CARS[i].ptank&&S.own.includes(i))ach('buyTank')};
-const _m=menu;menu=function(){_m();const b=[...ui.querySelectorAll('button')].find(x=>/UPGRADE SHOP/.test(x.textContent));if(b)b.insertAdjacentHTML('afterend','<button class="btn s" onclick=achMenu()>ACHIEVEMENTS</button>')};
-const mkB=(id,t,fn)=>{const b=document.createElement('button');b.id=id;b.textContent=t;b.onpointerdown=e=>{fn();e.preventDefault()};$('#tc').appendChild(b);return b},bG=mkB('bgun','FIRE',fireGun),bF=mkB('bfix','FIX',fixCar);
-const _lp=loop;loop=function(t){_lp(t);const gr=!G.air&&G.run&&OK(G.m);bG.style.display=gr&&(G.car.ptank||gLv()>0)?'':'none';bF.style.display=gr&&(S.s2||S.admin)&&(G.u[9]|0)?'':'none'};
+const _pf=pressFlare;pressFlare=function(){G.air?_pf():fire(0)};
+const mkB=(id,t,fn)=>{const b=document.createElement('button');b.id=id;b.textContent=t;b.onpointerdown=e=>{fn();e.preventDefault()};$('#tc').appendChild(b);b.style.display='none';return b},bG=mkB('bgun','FIRE',()=>fire(0)),bF=mkB('bfix','FIX',fixCar);
+const _lp=loop;loop=function(t){_lp(t);const im=inMode();bG.style.display=im&&(G.car.ptank||gLv()>0)?'':'none';bF.style.display=im&&(S.s2||S.admin)&&(G.u[9]|0)?'':'none'};
+const cvPos=e=>{const q=cv.getBoundingClientRect();return[(e.clientX-q.left)*W/q.width,(e.clientY-q.top)*H/q.height]};
+cv.addEventListener('pointermove',e=>{[AIM.x,AIM.y]=cvPos(e);AIM.has=1});
+cv.addEventListener('pointerdown',e=>{[AIM.x,AIM.y]=cvPos(e);AIM.has=1;AIM.down=1;fire(1)});
+['pointerup','pointercancel','blur'].forEach(t=>addEventListener(t,()=>AIM.down=0));
 addEventListener('keydown',e=>{if(typing(e))return;if(e.code=='KeyR')fixCar()});
-Object.assign(window,{achMenu});
-bG.style.display=bF.style.display='none';
 })();
 
 </script></body></html>
